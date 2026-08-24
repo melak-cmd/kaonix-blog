@@ -84,8 +84,8 @@ With OpenTelemetry, Dynamic Resource Allocation, improved artifact management, a
 
 > 🎯 **The takeaway:** Argo Workflows 4.1 makes Kubernetes-native workflow automation more **observable, resource-aware, and ready for GPU-accelerated workloads**.
 
-### 🔗 Source
+<!-- ### 🔗 Source
 
 📚 **Argo Project — Argo Workflows 4.1 is released**
 
-https://blog.argoproj.io/argo-workflows-4-1-first-release-candidate-6d680014278d
+https://blog.argoproj.io/argo-workflows-4-1-first-release-candidate-6d680014278d -->

@@ -193,8 +193,8 @@ Security, multi-tenancy, application fleet management, supply-chain verification
 
 > 🎯 **The-takeaway:** Argo CD 3.5 brings together **stronger security, better multi-tenancy, improved ApplicationSet management, Helm 4 support, and deeper Kubernetes integration**, making it a significant release for teams operating GitOps at scale.
 
-### 🔗 Source
+<!-- ### 🔗 Source
 
 📚 **Argo-Project — Argo-CD-v3.5-Release-Candidate**
 
-https://blog.argoproj.io/argo-cd-v3-5-release-candidate-02b1fbf7b419
+https://blog.argoproj.io/argo-cd-v3-5-release-candidate-02b1fbf7b419 -->

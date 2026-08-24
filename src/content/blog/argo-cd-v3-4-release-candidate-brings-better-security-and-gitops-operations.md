@@ -114,8 +114,8 @@ As organizations manage more clusters, environments, teams, and applications, ca
 
 > 🎯 **The-takeaway:** Argo CD 3.4 strengthens the foundations of enterprise GitOps with **better security, multi-tenancy, ApplicationSet capabilities, performance, and Kubernetes integration**.
 
-### 🔗 Source
+<!-- ### 🔗 Source
 
 📚 **Argo-Project — Argo-CD-v3.4-Release-Candidate**
 
-https://blog.argoproj.io/argo-cd-v3-4-release-candidate-2702b8af68d4
+https://blog.argoproj.io/argo-cd-v3-4-release-candidate-2702b8af68d4 -->

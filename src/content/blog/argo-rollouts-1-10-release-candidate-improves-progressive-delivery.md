@@ -96,8 +96,8 @@ Combined with Argo CD and GitOps practices, Rollouts provides a powerful foundat
 
 > 🎯 **The takeaway:** Argo Rollouts 1.10 makes progressive delivery **more reliable, safer, more extensible, and more efficient**, strengthening its role as a key component of modern Kubernetes platform engineering.
 
-### 🔗 Source
+<!-- ### 🔗 Source
 
 📚 **Argo Project — Argo Rollouts 1.10 Release Candidate**
 
-https://blog.argoproj.io/argo-rollouts-1-10-release-candidate-24c9edc69abe
+https://blog.argoproj.io/argo-rollouts-1-10-release-candidate-24c9edc69abe -->
