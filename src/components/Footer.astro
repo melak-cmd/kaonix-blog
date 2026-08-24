@@ -24,6 +24,16 @@ const year = new Date().getFullYear();
       <a href={withBase("/rss.xml")}>RSS Feed</a>
       <a href={withBase("/sitemap-index.xml")}>Sitemap</a>
     </div>
+    <div class="col">
+      <p class="heading">Connect</p>
+      <a
+        href="https://github.com/melak-cmd/kaonix-blog"
+        target="_blank"
+        rel="noopener noreferrer">GitHub</a
+      >
+      <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="#" target="_blank" rel="noopener noreferrer">Support ☕</a>
+    </div>
   </div>
   <div class="legal">
     © {year} {SITE_TITLE}. All rights reserved.
@@ -41,7 +51,7 @@ const year = new Date().getFullYear();
     max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 2.5rem;
   }
 

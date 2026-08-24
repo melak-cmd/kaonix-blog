@@ -1,0 +1,253 @@
+---
+import { withBase } from "../utils";
+---
+
+<button
+  id="search-trigger"
+  class="search-trigger"
+  type="button"
+  aria-label="Search"
+>
+  <span class="icon">⌕</span>
+  <span class="hint">Search</span>
+  <kbd>Ctrl K</kbd>
+</button>
+
+<div id="search-overlay" class="overlay" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="bar">
+      <span class="prompt">⌕</span>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="Search articles and tips…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd id="search-close">esc</kbd>
+    </div>
+    <ul id="search-results" role="listbox"></ul>
+    <p class="empty" id="search-empty" hidden>No results found.</p>
+  </div>
+</div>
+
+<style>
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.3rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .search-trigger:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  kbd {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.05rem 0.35rem;
+    font-size: 0.68rem;
+    background: var(--bg-soft);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgb(0 0 0 / 55%);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh 1rem 1rem;
+  }
+
+  .panel {
+    width: min(620px, 100%);
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: 0 0 40px rgb(var(--accent-rgb) / 20%);
+    overflow: hidden;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prompt {
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    max-height: 46vh;
+    overflow-y: auto;
+  }
+
+  li a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 8px;
+    text-decoration: none !important;
+  }
+
+  li a:hover,
+  li a.selected {
+    background: var(--accent-dim);
+  }
+
+  li a.selected {
+    outline: 1px solid var(--accent);
+  }
+
+  .r-title {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .r-type {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--accent-hover);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .empty {
+    padding: 1.2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+</style>
+
+<script>
+  const overlay = document.getElementById("search-overlay")!;
+  const trigger = document.getElementById("search-trigger")!;
+  const input = document.getElementById("search-input") as HTMLInputElement;
+  const list = document.getElementById("search-results")!;
+  const emptyMsg = document.getElementById("search-empty")!;
+  const closeBtn = document.getElementById("search-close")!;
+
+  interface Item {
+    type: string;
+    title: string;
+    description: string;
+    url: string;
+  }
+  let index: Item[] = [];
+  let filtered: Item[] = [];
+  let selected = 0;
+
+  async function loadIndex() {
+    if (index.length) return;
+    const res = await fetch(withBase("/search-index.json"));
+    index = await res.json();
+  }
+
+  function open() {
+    overlay.hidden = false;
+    document.body.style.overflow = "hidden";
+    loadIndex().then(() => input.focus());
+    input.focus();
+  }
+
+  function close() {
+    overlay.hidden = true;
+    document.body.style.overflow = "";
+    input.value = "";
+    render("");
+  }
+
+  function render(q: string) {
+    const needle = q.trim().toLowerCase();
+    filtered = needle
+      ? index.filter((it) =>
+          `${it.title} ${it.description} ${it.tags.join(" ")}`
+            .toLowerCase()
+            .includes(needle),
+        )
+      : index;
+    selected = 0;
+    emptyMsg.hidden = filtered.length > 0;
+    list.innerHTML = filtered
+      .map(
+        (it, i) => `
+      <li><a href="${withBase(it.url)}" data-i="${i}" class="${i === selected ? "selected" : ""}">
+        <span class="r-type">${it.type}</span>
+        <span class="r-title">${it.title}</span>
+      </a></li>`,
+      )
+      .join("");
+  }
+
+  function move(delta: number) {
+    if (!filtered.length) return;
+    selected = (selected + delta + filtered.length) % filtered.length;
+    list.querySelectorAll("a").forEach((a, i) => {
+      a.classList.toggle("selected", i === selected);
+    });
+    list.querySelectorAll("li")[selected]?.scrollIntoView({ block: "nearest" });
+  }
+
+  trigger.addEventListener("click", open);
+  closeBtn.addEventListener("click", close);
+  overlay.addEventListener("click", (e) => e.target === overlay && close());
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      overlay.hidden ? open() : close();
+    } else if (!overlay.hidden) {
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+      else if (e.key === "Enter" && filtered[selected]) {
+        window.location.href = withBase(filtered[selected].url);
+      }
+    }
+  });
+
+  input.addEventListener("input", () => render(input.value));
+</script>

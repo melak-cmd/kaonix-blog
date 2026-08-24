@@ -6,10 +6,48 @@ import MatrixRain from "../components/MatrixRain.astro";
 import TipsSection from "../components/TipsSection.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, CATEGORIES } from "../consts";
 import { withBase } from "../utils";
+import { getReadingTime } from "../utils";
+import { TIPS } from "../data/tips";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 6);
+
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const totalMinutes = allPosts.reduce(
+  (sum, p) => sum + getReadingTime(p.body ?? ""),
+  0,
+);
+const stats = [
+  { value: `${allPosts.length}`, label: "articles" },
+  { value: `${Math.round(totalMinutes / 6) / 10}h`, label: "of reading" },
+  { value: `${Object.keys(CATEGORIES).length}`, label: "categories" },
+  { value: `${TIPS.length}`, label: "quick tips" },
+];
+
+const startHere = [
+  {
+    icon: "🌱",
+    who: "Starting from zero?",
+    text: "Containers are the backbone of modern infrastructure — begin with Docker, no experience needed.",
+    href: withBase("/blog/getting-started-with-docker/"),
+    cta: "Learn Docker basics",
+  },
+  {
+    icon: "🚀",
+    who: "Ready to level up?",
+    text: "Clean Git history, strict TypeScript and solid APIs — the habits that separate juniors from seniors.",
+    href: withBase("/categories/best-practices/"),
+    cta: "Browse best practices",
+  },
+  {
+    icon: "🤖",
+    who: "Short on time?",
+    text: "Quick, actionable tips you can apply today — or catch up on what's shaping the industry.",
+    href: withBase("/tips/"),
+    cta: "Get quick tips",
+  },
+];
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -27,6 +65,36 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
         <a class="btn" href={withBase("/blog/")}>Read the Blog</a>
         <a class="link-alt" href={withBase("/categories/")}>Browse Categories →</a>
       </div>
+    </div>
+  </section>
+
+  <section class="stats-bar reveal" aria-label="Site statistics">
+    {
+      stats.map((s) => (
+        <div class="stat">
+          <span class="value">{s.value}</span>
+          <span class="label">{s.label}</span>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="start-here">
+    <h2 class="section-title reveal">// where_to_start</h2>
+    <div class="start-grid">
+      {
+        startHere.map((card, i) => (
+          <a
+            class="start-card reveal"
+            href={card.href}
+            style={`--reveal-delay:${i * 90}ms`}
+          >
+            <span class="who">{card.icon} {card.who}</span>
+            <p>{card.text}</p>
+            <span class="cta-link">{card.cta} →</span>
+          </a>
+        ))
+      }
     </div>
   </section>
 
@@ -64,7 +132,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
 </BaseLayout>
 
 <style>
-  /* Full-bleed banner */
+  /* Full-bleed banner — stays dark in every theme */
   .hero-banner {
     position: relative;
     width: 100vw;
@@ -81,7 +149,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
         rgb(0 255 65 / 6%) 0%,
         transparent 65%
       ),
-      var(--bg);
+      var(--hero-bg);
   }
 
   .scanlines {
@@ -107,7 +175,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
 
   .kicker {
     font-family: var(--font-mono);
-    color: var(--accent);
+    color: var(--matrix-green);
     font-size: 0.95rem;
     margin-bottom: 1.25rem;
     opacity: 0;
@@ -131,7 +199,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
   }
 
   .tagline {
-    color: var(--text-muted);
+    color: var(--hero-muted);
     font-size: 1.15rem;
     margin-bottom: 2rem;
     opacity: 0;
@@ -150,6 +218,100 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .link-alt {
     font-family: var(--font-mono);
     font-size: 0.95rem;
+  }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 720px;
+    margin: 2.5rem auto;
+    text-align: center;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:last-child {
+    border-right: none;
+  }
+
+  .stat .value {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat .label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .start-here {
+    margin-bottom: 4rem;
+  }
+
+  .start-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .start-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.4rem;
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .start-card:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgb(var(--accent-rgb) / 12%);
+  }
+
+  .who {
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+
+  .start-card p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .cta-link {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-hover);
+  }
+
+  @media (max-width: 560px) {
+    .stats-bar {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 1.5rem;
+    }
+
+    .stat:nth-child(2) {
+      border-right: none;
+    }
   }
 
   .categories {
@@ -176,7 +338,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .category-card:hover {
     text-decoration: none;
     border-color: var(--accent);
-    box-shadow: 0 0 20px rgb(0 255 65 / 12%);
+    box-shadow: 0 0 20px rgb(var(--accent-rgb) / 12%);
     transform: translateY(-3px);
   }
 

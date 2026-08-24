@@ -66,7 +66,7 @@ const tipOfDay = getTipOfTheDay();
     background:
       radial-gradient(
         ellipse at top left,
-        rgb(0 255 65 / 8%),
+        rgb(var(--accent-rgb) / 8%),
         transparent 60%
       ),
       var(--bg-card);
@@ -74,7 +74,7 @@ const tipOfDay = getTipOfTheDay();
     border-radius: var(--radius);
     padding: 1.5rem 1.75rem;
     margin-bottom: 2rem;
-    box-shadow: 0 0 24px rgb(0 255 65 / 8%);
+    box-shadow: 0 0 24px rgb(var(--accent-rgb) / 8%);
   }
 
   .tip-hero h2 {
@@ -114,7 +114,7 @@ const tipOfDay = getTipOfTheDay();
   .tip-card.today {
     border-color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 0 18px rgb(0 255 65 / 10%);
+    box-shadow: 0 0 18px rgb(var(--accent-rgb) / 10%);
   }
 
   .head {

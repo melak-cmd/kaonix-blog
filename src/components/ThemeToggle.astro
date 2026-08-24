@@ -1,0 +1,87 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-label="Switch theme"
+  title="Theme: auto (click to change)"
+>
+  <span class="icon" id="theme-icon">◐</span>
+  <span class="label" id="theme-label">auto</span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.3rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .icon {
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+</style>
+
+<script>
+  const ORDER = ["auto", "light", "dark"] as const;
+  const ICONS = { auto: "◐", light: "☀", dark: "☾" };
+  const LABELS = { auto: "auto", light: "light", dark: "dark" };
+
+  function stored(): (typeof ORDER)[number] {
+    const v = localStorage.getItem("kaonix-theme");
+    return ORDER.includes(v as any) ? (v as any) : "auto";
+  }
+
+  function resolve(pref: string): string {
+    if (pref !== "auto") return pref;
+    return window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
+  }
+
+  function apply() {
+    const pref = stored();
+    document.documentElement.dataset.theme = resolve(pref);
+    const icon = document.getElementById("theme-icon");
+    const label = document.getElementById("theme-label");
+    const btn = document.getElementById("theme-toggle");
+    if (icon) icon.textContent = ICONS[pref];
+    if (label) label.textContent = LABELS[pref];
+    if (btn) btn.title = `Theme: ${pref} (click to change)`;
+  }
+
+  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+    const next = ORDER[(ORDER.indexOf(stored()) + 1) % ORDER.length];
+    localStorage.setItem("kaonix-theme", next);
+    apply();
+  });
+
+  // Follow OS changes while in auto mode
+  window
+    .matchMedia("(prefers-color-scheme: light)")
+    .addEventListener("change", () => {
+      if (stored() === "auto") apply();
+    });
+
+  apply();
+</script>

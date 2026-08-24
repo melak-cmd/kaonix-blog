@@ -1,6 +1,8 @@
 ---
 import { SITE_TITLE } from "../consts";
 import { withBase } from "../utils";
+import ThemeToggle from "./ThemeToggle.astro";
+import SearchModal from "./SearchModal.astro";
 
 const { pathname } = Astro.url;
 
@@ -56,6 +58,10 @@ const isActive = (href: string) =>
         ))
       }
     </nav>
+    <div class="actions">
+      <SearchModal />
+      <ThemeToggle />
+    </div>
   </div>
 </header>
 
@@ -77,6 +83,12 @@ const isActive = (href: string) =>
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
   }
 
   .logo {
@@ -117,6 +129,10 @@ const isActive = (href: string) =>
 
     nav {
       gap: 1.1rem;
+    }
+
+    .actions {
+      gap: 0.5rem;
     }
   }
 </style>
