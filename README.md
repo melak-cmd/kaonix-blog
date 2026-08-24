@@ -4,7 +4,7 @@
 
 **IT tutorials, best practices, and the latest news in technology** — built with [Astro](https://astro.build), themed after the Matrix, deployed anywhere.
 
-🔗 **Live**: https://melak-cmd.github.io/kaonix-blog/ · https://doli.kaonix.local (local Docker)
+🔗 **Live**: https://melak-cmd.github.io/kaonix-blog/ · https://kaonix.blog.local (local Docker)
 
 ---
 
@@ -50,10 +50,10 @@ make up             # → http://localhost → redirects to https://localhost
 For the nice domain name, add to `/etc/hosts`:
 
 ```
-127.0.0.1 doli.kaonix.local
+127.0.0.1 kaonix.blog.local
 ```
 
-then open **https://doli.kaonix.local** — trusted automatically by your browser via the mkcert local CA.
+then open **https://kaonix.blog.local** — trusted automatically by your browser via the mkcert local CA.
 
 > Regenerated certificates? Restart nginx so it reloads them: `docker compose restart web`
 

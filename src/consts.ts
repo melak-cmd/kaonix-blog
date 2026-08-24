@@ -1,7 +1,7 @@
 export const SITE_TITLE = "Kaonix Blog";
 export const SITE_DESCRIPTION =
   "IT tutorials, best practices, and the latest news in technology.";
-export const SITE_URL = "https://doli.kaonix.local";
+export const SITE_URL = "https://kaonix.blog.local";
 
 export const CATEGORIES = {
   tutorials: {

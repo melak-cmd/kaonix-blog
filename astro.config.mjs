@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 // GitHub Pages serves project sites from a subpath (e.g. /kaonix-blog/).
 // The workflow sets PUBLIC_BASE_PATH; local dev and Docker stay at root.
 const basePath = process.env.PUBLIC_BASE_PATH ?? "";
-const siteUrl = process.env.SITE_URL ?? "https://doli.kaonix.local";
+const siteUrl = process.env.SITE_URL ?? "https://kaonix.blog.local";
 
 export default defineConfig({
   site: siteUrl,

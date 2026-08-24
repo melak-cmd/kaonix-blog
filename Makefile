@@ -4,7 +4,7 @@ IMAGE_NAME  := kaonix-blog
 CONTAINER   := kaonix-blog
 PORT        := 80
 TLS_PORT    := 443
-DOMAIN      := doli.kaonix.local
+DOMAIN      := kaonix.blog.local
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \

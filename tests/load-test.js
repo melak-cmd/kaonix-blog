@@ -2,7 +2,7 @@ import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend } from "k6/metrics";
 
-const BASE_URL = __ENV.BASE_URL || "https://doli.kaonix.local";
+const BASE_URL = __ENV.BASE_URL || "https://kaonix.blog.local";
 
 const pageDuration = new Trend("page_duration", true);
 
