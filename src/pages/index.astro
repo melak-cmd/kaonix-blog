@@ -3,11 +3,9 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
 import MatrixRain from "../components/MatrixRain.astro";
-import TipsSection from "../components/TipsSection.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, CATEGORIES } from "../consts";
 import { withBase } from "../utils";
 import { getReadingTime } from "../utils";
-import { TIPS } from "../data/tips";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -22,7 +20,6 @@ const stats = [
   { value: `${allPosts.length}`, label: "articles" },
   { value: `${Math.round(totalMinutes / 6) / 10}h`, label: "of reading" },
   { value: `${Object.keys(CATEGORIES).length}`, label: "categories" },
-  { value: `${TIPS.length}`, label: "quick tips" },
 ];
 
 const startHere = [
@@ -41,11 +38,11 @@ const startHere = [
     cta: "Browse best practices",
   },
   {
-    icon: "🤖",
+    icon: "📰",
     who: "Short on time?",
-    text: "Quick, actionable tips you can apply today — or catch up on what's shaping the industry.",
-    href: withBase("/tips/"),
-    cta: "Get quick tips",
+    text: "Catch up on what's shaping the industry — tooling, AI and platform engineering news worth your attention.",
+    href: withBase("/categories/news/"),
+    cta: "Read tech news",
   },
 ];
 ---
@@ -127,8 +124,6 @@ const startHere = [
       }
     </div>
   </section>
-
-  <TipsSection />
 </BaseLayout>
 
 <style>

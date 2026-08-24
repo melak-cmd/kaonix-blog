@@ -14,9 +14,8 @@
 - 🏷️ **3 categories** — Tutorials, Best Practices, Tech News
 - 🌗 **Theme system** — Auto / Light / Dark toggle, persisted in localStorage, no flash on load
 - 🌧️ **Matrix banner** — animated code rain (katakana + Arabic + hex) on canvas with CRT scanlines
-- 🔍 **Search** — `Ctrl+K` overlay filtering posts & tips, full keyboard navigation
+- 🔍 **Search** — `Ctrl+K` overlay filtering posts, full keyboard navigation
 - 📄 **Pagination** — Crossplane-style listing, 6 posts per page (`/blog/page/N/`)
-- 💡 **Tips section** — daily rotating tip + dedicated archive at `/tips`
 - ⏱️ **Reading time**, table of contents, prev/next navigation, copy-to-clipboard code blocks
 - 📈 **SEO ready** — Open Graph, Twitter cards, canonical URLs, sitemap, RSS feed
 - ♿ **Accessible** — skip-link, ARIA labels, `prefers-reduced-motion` respected everywhere
@@ -94,12 +93,10 @@ Posts are validated against the schema in `src/content.config.ts` — a bad fron
 │   ├── components/          # Header, Footer, PostCard, Timeline,
 │   │                        # MatrixRain, ThemeToggle, SearchModal…
 │   ├── content/blog/        # ← your Markdown posts
-│   ├── data/tips.ts         # tips archive (daily rotation source)
 │   ├── layouts/             # BaseLayout (SEO + theme init + scripts)
 │   ├── pages/
 │   │   ├── blog/            # paginated listing + post routes
 │   │   ├── categories/      # per-category listings
-│   │   ├── tips/            # tips archive page
 │   │   └── rss.xml.js       # RSS feed endpoint
 │   ├── styles/global.css    # design tokens (dark + light palettes)
 │   └── utils/               # reading time, dates, base-path helper
