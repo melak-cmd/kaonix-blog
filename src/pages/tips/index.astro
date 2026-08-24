@@ -1,28 +1,34 @@
 ---
-import { TIPS, getTipOfTheDay } from "../data/tips";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { TIPS, getTipOfTheDay } from "../../data/tips";
 
 const tipOfDay = getTipOfTheDay();
-const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
 ---
 
-<section class="tips">
-  <div class="section-head reveal">
-    <h2 class="section-title">// tips_of_the_trade</h2>
-    <a class="all-link" href="/tips/">View all tips →</a>
-  </div>
+<BaseLayout
+  title="Tips & Tricks | Kaonix"
+  description="Quick, practical tips for developers: debugging, git, security, docker and more."
+>
+  <header class="page-header">
+    <h1>// tips_of_the_trade</h1>
+    <p class="intro">
+      {TIPS.length} short, practical lessons — one new highlight every day.
+    </p>
+  </header>
 
   <article class="tip-hero reveal">
     <span class="badge badge-tutorials">💡 Tip of the day</span>
-    <h3>{tipOfDay.icon} {tipOfDay.title}</h3>
+    <h2>{tipOfDay.icon} {tipOfDay.title}</h2>
     <p>{tipOfDay.text}</p>
   </article>
 
   <div class="grid">
     {
-      more.map((tip, i) => (
+      TIPS.map((tip, i) => (
         <article
-          class="tip-card reveal"
-          style={`--reveal-delay:${Math.min((i + 1) * 90, 450)}ms`}
+          class:list={["tip-card", "reveal", { today: tip === tipOfDay }]}
+          style={`--reveal-delay:${Math.min(i * 80, 400)}ms`}
+          id={`tip-${i + 1}`}
         >
           <div class="head">
             <span>{tip.icon} {tip.title}</span>
@@ -33,31 +39,27 @@ const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
       ))
     }
   </div>
-</section>
+
+  <p class="back reveal">
+    <a href="/">← Back home</a>
+  </p>
+</BaseLayout>
 
 <style>
-  .tips {
-    margin-top: 4rem;
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
   }
 
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .section-title {
-    font-size: 1.7rem;
+  .page-header h1 {
     font-family: var(--font-mono);
     color: var(--accent);
-    margin-bottom: 0;
   }
 
-  .all-link {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
+  .intro {
+    color: var(--text-muted);
+    margin-top: 0.4rem;
   }
 
   .tip-hero {
@@ -71,11 +73,11 @@ const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
     border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
     border-radius: var(--radius);
     padding: 1.5rem 1.75rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 2rem;
     box-shadow: 0 0 24px rgb(0 255 65 / 8%);
   }
 
-  .tip-hero h3 {
+  .tip-hero h2 {
     font-size: 1.3rem;
     margin: 0.9rem 0 0.4rem;
   }
@@ -86,7 +88,7 @@ const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
   }
 
@@ -108,7 +110,8 @@ const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
       box-shadow 0.3s ease;
   }
 
-  .tip-card:hover {
+  .tip-card:hover,
+  .tip-card.today {
     border-color: var(--accent);
     transform: translateY(-2px);
     box-shadow: 0 0 18px rgb(0 255 65 / 10%);
@@ -135,5 +138,9 @@ const more = TIPS.filter((t) => t !== tipOfDay).slice(0, 6);
     color: var(--text-muted);
     font-size: 0.88rem;
     line-height: 1.55;
+  }
+
+  .back {
+    margin-top: 2.5rem;
   }
 </style>
