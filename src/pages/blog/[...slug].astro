@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 const { post, prev, next } = Astro.props;
 const { Content, headings } = await render(post);
 
-const { title, description, pubDate, updatedDate, category, author, tags } =
+const { title, description, pubDate, updatedDate, category, author, tags, source } =
   post.data;
 
 const readingTime = getReadingTime(post.body ?? "");
@@ -54,6 +54,13 @@ const categoryMeta = CATEGORIES[category];
                 <time datetime={updatedDate.toISOString()}>
                   {formatDate(updatedDate)}
                 </time>
+              </span>
+            )
+          }
+          {
+            source && (
+              <span>
+                {" "}· <a class="source" href={source} target="_blank" rel="noopener noreferrer">Source ↗</a>
               </span>
             )
           }
@@ -138,6 +145,9 @@ const categoryMeta = CATEGORIES[category];
     font-size: 0.9rem;
   }
 
+  .post-meta .source {
+    font-weight: 600;
+  }
 
   .prose {
     font-size: 1.05rem;
