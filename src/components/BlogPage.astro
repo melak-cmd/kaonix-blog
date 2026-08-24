@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogList from "./BlogList.astro";
+import Timeline from "./Timeline.astro";
+import { getCollection } from "astro:content";
+import { getReadingTime, withBase } from "../utils";
+
+interface Props {
+  page: {
+    data: CollectionEntry<"blog">[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev: string | undefined; next: string | undefined };
+  };
+}
+
+const { page } = Astro.props;
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const totalReadingTime = allPosts.reduce(
+  (sum, p) => sum + getReadingTime(p.body ?? ""),
+  0,
+);
+---
+
+<BaseLayout
+  title={page.currentPage === 1 ? "Blog | Kaonix" : `Blog — Page ${page.currentPage} | Kaonix`}
+  description="All articles: IT tutorials, best practices, and tech news."
+>
+  <header class="page-header">
+    <h1>// blog</h1>
+    <p class="stats">
+      {allPosts.length} articles · {totalReadingTime} min of reading
+    </p>
+  </header>
+
+  <div class="layout">
+    <div class="main-col">
+      <BlogList {page} />
+    </div>
+    <Timeline posts={allPosts} />
+  </div>
+
+  <p class="back reveal">
+    <a href={withBase("/")}>← Back home</a>
+  </p>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 0.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats {
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 3rem;
+  }
+
+  .back {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

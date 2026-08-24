@@ -1,0 +1,174 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { CATEGORIES } from "../consts";
+import { withBase, formatDate } from "../utils";
+
+interface Props {
+  page: {
+    data: CollectionEntry<"blog">[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev: string | undefined; next: string | undefined };
+  };
+}
+
+const { page } = Astro.props;
+---
+
+<div class="post-list">
+  {
+    page.data.map((post) => {
+      const meta = CATEGORIES[post.data.category];
+      return (
+        <article class="post-row reveal">
+          <h2 class="title">
+            <a href={withBase(`/blog/${post.id}/`)}>{post.data.title}</a>
+          </h2>
+
+          <p class="meta">
+            By <strong>{post.data.author}</strong>
+            <span class="sep">|</span>
+            <a
+              class={`badge badge-${post.data.category}`}
+              href={withBase(`/categories/${post.data.category}/`)}
+            >
+              {meta.icon} {meta.name}
+            </a>
+            <span class="sep">|</span>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {formatDate(post.data.pubDate)}
+            </time>
+          </p>
+
+          <p class="excerpt">{post.data.description}</p>
+
+          <div class="foot">
+            <ul class="tags">
+              {post.data.tags.map((tag) => (
+                <li>#{tag}</li>
+              ))}
+            </ul>
+            <a class="more" href={withBase(`/blog/${post.id}/`)}>
+              Read more »
+            </a>
+          </div>
+        </article>
+      );
+    })
+  }
+</div>
+
+<nav class="pager" aria-label="Pagination">
+  {
+    page.url.prev ? (
+      <a class="pager-link" href={withBase(page.url.prev)}>
+        ← Newer posts
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  <span class="pager-status">
+    Page {page.currentPage} of {page.lastPage}
+  </span>
+  {
+    page.url.next ? (
+      <a class="pager-link" href={withBase(page.url.next)}>
+        Older posts →
+      </a>
+    ) : (
+      <span />
+    )
+  }
+</nav>
+
+<style>
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-row {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .title {
+    font-size: 1.45rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .title a {
+    color: var(--text);
+  }
+
+  .title a:hover {
+    color: var(--accent-hover);
+    text-decoration: none;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .sep {
+    opacity: 0.4;
+  }
+
+  .badge {
+    text-decoration: none;
+  }
+
+  .excerpt {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-hover);
+  }
+
+  .more {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2rem;
+  }
+
+  .pager-status {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .pager-link {
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import BlogPage from "../../../components/BlogPage.astro";
+import { getCollection } from "astro:content";
+import { buildPagination } from "../../../utils/pagination";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  // Pages 2+ live at /blog/page/N/
+  return buildPagination(posts, 6)
+    .filter((p) => p.currentPage > 1)
+    .map((p) => ({ params: { page: String(p.currentPage) }, props: { page: p } }));
+}
+
+const { page } = Astro.props;
+---
+
+<BlogPage {page} />
