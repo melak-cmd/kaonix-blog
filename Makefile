@@ -1,4 +1,4 @@
-.PHONY: help install dev build preview clean certs up down logs
+.PHONY: help install dev build preview clean certs up down logs load-test
 
 IMAGE_NAME  := kaonix-blog
 CONTAINER   := kaonix-blog
@@ -42,6 +42,10 @@ down: ## Stop and remove the container
 
 logs: ## Follow container logs
 	docker compose logs -f
+
+load-test: ## Run k6 load test against https://$(DOMAIN) (60s)
+	docker run --rm --network host -v $(PWD)/tests:/scripts \
+		-e BASE_URL=https://$(DOMAIN) grafana/k6 run /scripts/load-test.js
 
 docker-build: ## Build the Docker image only
 	docker build -t $(IMAGE_NAME) .
