@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
 import MatrixRain from "../components/MatrixRain.astro";
+import TipsSection from "../components/TipsSection.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, CATEGORIES } from "../consts";
 import { withBase } from "../utils";
 
@@ -58,6 +59,8 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
       }
     </div>
   </section>
+
+  <TipsSection />
 </BaseLayout>
 
 <style>
