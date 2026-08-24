@@ -79,6 +79,11 @@ import { withBase } from "../utils";
     padding: 12vh 1rem 1rem;
   }
 
+  /* Author display:flex must not defeat the [hidden] attribute */
+  .overlay[hidden] {
+    display: none;
+  }
+
   .panel {
     width: min(620px, 100%);
     background: var(--bg-card);
