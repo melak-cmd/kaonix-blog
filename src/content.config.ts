@@ -10,6 +10,7 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     category: z.enum(["tutorials", "best-practices", "news"]),
     tags: z.array(z.string()).default([]),
+    technologies: z.array(z.string()).default([]),
     author: z.string().default("Kaonix Team"),
     source: z.string().url().optional(),
     draft: z.boolean().default(false),

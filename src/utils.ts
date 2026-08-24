@@ -19,3 +19,33 @@ export function formatDate(date: Date): string {
     day: "numeric",
   });
 }
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export interface TagStat {
+  slug: string;
+  name: string;
+  count: number;
+}
+
+export function collectTechnologies(
+  posts: { data: { technologies?: string[] } }[],
+): TagStat[] {
+  const counts = new Map<string, TagStat>();
+  for (const post of posts) {
+    for (const tech of post.data.technologies ?? []) {
+      const slug = slugify(tech);
+      const existing = counts.get(slug);
+      if (existing) existing.count += 1;
+      else counts.set(slug, { slug, name: tech, count: 1 });
+    }
+  }
+  return [...counts.values()].sort(
+    (a, b) => b.count - a.count || a.name.localeCompare(b.name),
+  );
+}

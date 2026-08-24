@@ -4,6 +4,7 @@ description: "Stop using passwords. Learn how to generate, deploy, and harden SS
 pubDate: 2026-07-25
 category: "tutorials"
 tags: ["ssh", "security", "linux"]
+technologies: ["SSH", "Linux"]
 author: "Kaonix Team"
 ---
 

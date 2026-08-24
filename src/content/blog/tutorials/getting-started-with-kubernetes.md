@@ -4,6 +4,7 @@ description: "Understand core Kubernetes concepts and run a real cluster on your
 pubDate: 2026-08-22
 category: "tutorials"
 tags: ["kubernetes", "k8s", "devops", "containers"]
+technologies: ["Kubernetes", "kubectl"]
 author: "Kaonix Team"
 ---
 

@@ -4,6 +4,7 @@ description: "Learn Docker from scratch: install it, run your first container, b
 pubDate: 2026-08-10
 category: "tutorials"
 tags: ["docker", "containers", "devops"]
+technologies: ["Docker"]
 author: "Kaonix Team"
 ---
 

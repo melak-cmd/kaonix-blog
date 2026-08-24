@@ -183,6 +183,7 @@ import { withBase } from "../utils";
     description: string;
     url: string;
     tags: string[];
+    technologies?: string[];
   }
   let index: Item[] = [];
   let filtered: Item[] = [];
@@ -222,7 +223,7 @@ import { withBase } from "../utils";
     const needle = q.trim().toLowerCase();
     filtered = needle
       ? index.filter((it) =>
-          `${it.title} ${it.description} ${it.tags.join(" ")}`
+          `${it.title} ${it.description} ${it.tags.join(" ")} ${(it.technologies ?? []).join(" ")}`
             .toLowerCase()
             .includes(needle),
         )

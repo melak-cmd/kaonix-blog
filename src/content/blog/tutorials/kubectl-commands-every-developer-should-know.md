@@ -4,6 +4,7 @@ description: "Stop copy-pasting YAML blindly. Master the kubectl commands that m
 pubDate: 2026-08-21
 category: "tutorials"
 tags: ["kubernetes", "k8s", "kubectl", "cli"]
+technologies: ["Kubernetes", "kubectl"]
 author: "Kaonix Team"
 ---
 
