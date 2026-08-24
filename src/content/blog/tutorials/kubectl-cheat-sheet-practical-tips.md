@@ -4,7 +4,6 @@ description: "A practical kubectl reference for Kubernetes administrators, devel
 pubDate: 2026-08-24
 category: "tutorials"
 tags: ["kubernetes", "k8s", "kubectl", "devops", "cheatsheet"]
-technologies: ["Kubernetes", "kubectl"]
 author: "Kaonix Team"
 ---
 

@@ -4,7 +4,6 @@ description: "A hands-on tutorial covering routing, middleware, error handling, 
 pubDate: 2026-07-18
 category: "tutorials"
 tags: ["nodejs", "express", "api", "backend"]
-technologies: ["Node.js", "Express"]
 author: "Kaonix Team"
 ---
 

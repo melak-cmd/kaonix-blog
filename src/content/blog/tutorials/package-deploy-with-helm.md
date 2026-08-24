@@ -4,7 +4,6 @@ description: "Stop copy-pasting YAML between environments. Learn Helm charts, va
 pubDate: 2026-08-23
 category: "tutorials"
 tags: ["kubernetes", "k8s", "helm", "devops"]
-technologies: ["Helm", "Kubernetes"]
 author: "Kaonix Team"
 ---
 

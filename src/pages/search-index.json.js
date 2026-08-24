@@ -13,7 +13,6 @@ export async function GET() {
     url: `/blog/${post.id}/`,
     category: post.data.category,
     tags: post.data.tags,
-    technologies: post.data.technologies,
   }));
 
   return new Response(JSON.stringify(results), {
