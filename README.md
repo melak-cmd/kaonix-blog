@@ -87,8 +87,7 @@ Posts are validated against the schema in `src/content.config.ts` — a bad fron
 ├── Makefile                 # all common tasks (make help)
 ├── nginx.conf               # TLS, security headers, gzip, caching
 ├── public/
-│   ├── favicon.svg          # matrix logo
-│   └── robots.txt
+│   └── favicon.svg          # matrix logo
 ├── src/
 │   ├── components/          # Header, Footer, PostCard, Timeline,
 │   │                        # MatrixRain, ThemeToggle, SearchModal…
@@ -97,6 +96,7 @@ Posts are validated against the schema in `src/content.config.ts` — a bad fron
 │   ├── pages/
 │   │   ├── blog/            # paginated listing + post routes
 │   │   ├── categories/      # per-category listings
+│   │   ├── robots.txt.js    # robots endpoint (sitemap URL from SITE_URL)
 │   │   └── rss.xml.js       # RSS feed endpoint
 │   ├── styles/global.css    # design tokens (dark + light palettes)
 │   └── utils/               # reading time, dates, base-path helper

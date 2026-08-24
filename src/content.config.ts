@@ -11,6 +11,7 @@ const blog = defineCollection({
     category: z.enum(["tutorials", "best-practices", "news"]),
     tags: z.array(z.string()).default([]),
     author: z.string().default("Kaonix Team"),
+    source: z.string().url().optional(),
     draft: z.boolean().default(false),
     readingTime: z.number().optional(),
   }),
