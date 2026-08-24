@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE_TITLE } from "../consts";
+import { withBase } from "../utils";
+---
+
+<BaseLayout
+  title="About | Kaonix"
+  description={`About ${SITE_TITLE}: who we are and what we write about.`}
+>
+  <article class="about">
+    <h1>About {SITE_TITLE}</h1>
+    <div class="prose">
+      <p>
+        Welcome to <strong>{SITE_TITLE}</strong> — a blog dedicated to helping
+        developers and IT professionals grow their skills and stay ahead of the
+        curve.
+      </p>
+
+      <h2>What we cover</h2>
+      <ul>
+        <li>
+          📚 <strong>Tutorials</strong> — hands-on, step-by-step guides on
+          tools, frameworks, and workflows you use every day.
+        </li>
+        <li>
+          ✅ <strong>Best Practices</strong> — patterns, conventions, and hard
+          -earned lessons for writing reliable, maintainable software.
+        </li>
+        <li>
+          📰 <strong>Tech News</strong> — curated updates on releases,
+          trends, and what's shaping the industry.
+        </li>
+      </ul>
+
+      <h2>Why Kaonix?</h2>
+      <p>
+        Technology moves fast. Our goal is to cut through the noise with clear,
+        practical content: no fluff, no hype — just knowledge you can apply to
+        your projects right away.
+      </p>
+
+      <h2>Get involved</h2>
+      <p>
+        Have an idea for a topic? Spotted an error in an article? We'd love to
+        hear from you. Subscribe via <a href={withBase("/rss.xml")}>RSS</a> to get new
+        posts as soon as they're published.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin-bottom: 1.5rem;
+  }
+</style>

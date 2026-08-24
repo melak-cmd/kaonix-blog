@@ -1,0 +1,266 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { CATEGORIES } from "../../consts";
+import { getReadingTime, formatDate, withBase } from "../../utils";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      prev: posts[i + 1] ?? null,
+      next: posts[i - 1] ?? null,
+    },
+  }));
+}
+
+const { post, prev, next } = Astro.props;
+const { Content, headings } = await render(post);
+
+const { title, description, pubDate, updatedDate, category, author, tags } =
+  post.data;
+
+const readingTime = getReadingTime(post.body ?? "");
+const toc = headings.filter((h) => h.depth === 2);
+const categoryMeta = CATEGORIES[category];
+---
+
+<BaseLayout
+  title={`${title} | Kaonix`}
+  description={description}
+  type="article"
+  publishedTime={pubDate}
+  tags={tags}
+>
+  <div class="post-layout">
+    <article>
+      <header class="post-header">
+        <a class={`badge badge-${category}`} href={withBase(`/categories/${category}/`)}>
+          {categoryMeta.icon} {categoryMeta.name}
+        </a>
+        <h1>{title}</h1>
+        <p class="post-meta">
+          By <strong>{author}</strong> ·
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time> ·
+          <span>{readingTime} min read</span>
+          {
+            updatedDate && (
+              <span>
+                {" "}· Updated{" "}
+                <time datetime={updatedDate.toISOString()}>
+                  {formatDate(updatedDate)}
+                </time>
+              </span>
+            )
+          }
+        </p>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        tags.length > 0 && (
+          <ul class="post-tags">
+            {tags.map((tag) => (
+              <li>#{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </article>
+
+    {
+      toc.length > 1 && (
+        <aside class="toc" aria-label="Table of contents">
+          <h2>On this page</h2>
+          <ul>
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+
+  <nav class="post-nav" aria-label="Post navigation">
+    {
+      prev ? (
+        <a class="nav-card" href={withBase(`/blog/${prev.id}/`)} rel="prev">
+          <span>← Older</span>
+          <strong>{prev.data.title}</strong>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a class="nav-card next" href={withBase(`/blog/${next.id}/`)} rel="next">
+          <span>Newer →</span>
+          <strong>{next.data.title}</strong>
+        </a>
+      )
+    }
+  </nav>
+
+  <p class="back">
+    <a href={withBase("/blog/")}>← All articles</a>
+  </p>
+</BaseLayout>
+
+<style>
+  .post-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 760px) 220px;
+    gap: 3rem;
+    justify-content: center;
+  }
+
+  .post-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-header h1 {
+    margin: 1rem 0 0.75rem;
+  }
+
+  .post-meta {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .prose {
+    font-size: 1.05rem;
+  }
+
+  .post-tags {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-hover);
+  }
+
+  .post-tags li {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.9rem;
+  }
+
+  /* Table of contents */
+  .toc {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    font-size: 0.85rem;
+  }
+
+  .toc h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    border-left: 2px solid var(--border);
+  }
+
+  .toc li a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 0.9rem;
+    color: var(--text-muted);
+    border-left: 2px solid transparent;
+    margin-left: -2px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .toc li a:hover {
+    color: var(--text);
+    text-decoration: none;
+    border-left-color: var(--accent);
+  }
+
+  /* Prev / next */
+  .post-nav {
+    max-width: 1000px;
+    margin: 4rem auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .nav-card:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+  }
+
+  .nav-card.next {
+    text-align: right;
+  }
+
+  .nav-card span {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .nav-card strong {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .back {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .post-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .toc {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .post-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-card.next {
+      text-align: left;
+    }
+  }
+</style>

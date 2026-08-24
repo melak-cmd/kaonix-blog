@@ -1,0 +1,121 @@
+---
+import { SITE_TITLE } from "../consts";
+import { withBase } from "../utils";
+
+const { pathname } = Astro.url;
+
+const links = [
+  { href: withBase("/"), label: "Home" },
+  { href: withBase("/blog/"), label: "Blog" },
+  { href: withBase("/categories/"), label: "Categories" },
+  { href: withBase("/about/"), label: "About" },
+];
+
+const homeHref = withBase("/");
+
+const isActive = (href: string) =>
+  href === homeHref ? pathname === homeHref : pathname.startsWith(href);
+---
+
+<header>
+  <div class="container">
+    <a class="logo" href={withBase("/")}>
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+      >
+        <rect
+          width="32"
+          height="32"
+          rx="6"
+          fill="#0a140a"
+          stroke="#00ff41"
+          stroke-width="2"></rect>
+        <path
+          d="M9 12l5 4-5 4M16 20h7"
+          stroke="#00ff41"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"></path>
+      </svg>
+      <span>{SITE_TITLE}</span>
+    </a>
+    <nav>
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[{ active: isActive(link.href) }]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 1.5rem;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+
+  .logo:hover {
+    text-decoration: none;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.4rem;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  nav a:hover,
+  nav a.active {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  @media (max-width: 640px) {
+    .container {
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    nav {
+      gap: 1.1rem;
+    }
+  }
+</style>

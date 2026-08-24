@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { CATEGORIES } from "../../consts";
+
+export async function getStaticPaths() {
+  const keys = Object.keys(CATEGORIES);
+  return keys.map((category) => ({
+    params: { category },
+  }));
+}
+
+const { category } = Astro.params;
+const meta = CATEGORIES[category as keyof typeof CATEGORIES];
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .filter((post) => post.data.category === category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={`${meta.name} | Kaonix`} description={meta.description}>
+  <header class="cat-header">
+    <h1>{meta.icon} {meta.name}</h1>
+    <p>{meta.description}</p>
+  </header>
+  <div class="grid">
+    {
+      posts.map((post, i) => (
+        <div
+          class="reveal"
+          style={`--reveal-delay:${Math.min(i * 90, 450)}ms`}
+        >
+          <PostCard post={post} />
+        </div>
+      ))
+    }
+  </div>
+  {
+    posts.length === 0 && (
+      <p class="empty">No articles in this category yet — stay tuned!</p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .cat-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cat-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .grid > .reveal {
+    height: 100%;
+  }
+
+  .empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 3rem 0;
+  }
+</style>

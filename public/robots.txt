@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://doli.kaonix.local/sitemap-index.xml

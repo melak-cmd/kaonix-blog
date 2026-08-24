@@ -1,0 +1,120 @@
+---
+import { CATEGORIES } from "../consts";
+import { withBase } from "../utils";
+import type { CollectionEntry } from "astro:content";
+import { getReadingTime, formatDate } from "../utils";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, category, tags } = post.data;
+
+const readingTime = getReadingTime(post.body ?? "");
+const categoryMeta = CATEGORIES[category];
+---
+
+<article class="post-card">
+  <div class="meta">
+    <a
+      class={`badge badge-${category}`}
+      href={withBase(`/categories/${category}/`)}
+      aria-label={`Category: ${categoryMeta.name}`}
+    >
+      {categoryMeta.icon} {categoryMeta.name}
+    </a>
+    <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+  </div>
+  <h2>
+    <a href={withBase(`/blog/${post.id}/`)}>{title}</a>
+  </h2>
+  <p class="description">{description}</p>
+  <div class="footer">
+    <ul class="tags">
+      {tags.map((tag) => <li>#{tag}</li>)}
+    </ul>
+    <span class="read">{readingTime} min read</span>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .post-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .badge {
+    text-decoration: none;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h2 a {
+    color: var(--text);
+  }
+
+  h2 a:hover {
+    color: var(--accent-hover);
+    text-decoration: none;
+  }
+
+  .description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--accent-hover);
+  }
+
+  .read {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { CATEGORIES } from "../consts";
+import { withBase } from "../utils";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+
+const byYear = new Map<number, CollectionEntry<"blog">[]>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+
+const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
+---
+
+<aside class="timeline" aria-label="Article timeline">
+  <h2>Timeline</h2>
+  {
+    years.map(([year, yearPosts]) => (
+      <section class="year-group">
+        <p class="year">{year}</p>
+        <ul>
+          {yearPosts.map((post) => (
+            <li>
+              <a href={withBase(`/blog/${post.id}/`)}>
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </time>
+                <span class="title">
+                  {CATEGORIES[post.data.category].icon} {post.data.title}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</aside>
+
+<style>
+  .timeline {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    font-size: 0.85rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+  }
+
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .year-group + .year-group {
+    margin-top: 1.25rem;
+  }
+
+  .year {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--accent-hover);
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    border-left: 2px solid var(--border);
+  }
+
+  li a {
+    position: relative;
+    display: block;
+    padding: 0.35rem 0 0.35rem 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  /* dot */
+  li a::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0.85rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--text-muted);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  li a:hover::before {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  time {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    opacity: 0.8;
+  }
+
+  .title {
+    color: var(--text-muted);
+    transition: color 0.15s ease;
+  }
+
+  li a:hover .title {
+    color: var(--text);
+  }
+</style>

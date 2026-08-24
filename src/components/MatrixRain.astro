@@ -1,0 +1,82 @@
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
+
+<style>
+  #matrix-rain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.32;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById("matrix-rain") as HTMLCanvasElement;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (canvas && !reduced) {
+    const ctx = canvas.getContext("2d")!;
+    const CHARS =
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF<>{}[]$#@";
+    const FONT = 15;
+
+    let width: number, height: number, drops: number[], timer: number;
+
+    function resize() {
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      canvas.width = width * devicePixelRatio;
+      canvas.height = height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      const cols = Math.ceil(width / FONT);
+      drops = Array.from({ length: cols }, () => Math.random() * -60);
+      ctx.fillStyle = "#050805";
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    function draw() {
+      // translucent black veil -> fading trails
+      ctx.fillStyle = "rgba(5, 8, 5, 0.09)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = `${FONT}px monospace`;
+
+      drops.forEach((y, i) => {
+        const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+        const x = i * FONT;
+        const py = y * FONT;
+
+        // leading character brighter
+        ctx.fillStyle = Math.random() > 0.96 ? "#b4ffc6" : "#00ff41";
+        ctx.fillText(char, x, py);
+
+        if (py > height && Math.random() > 0.976) drops[i] = 0;
+        drops[i]++;
+      });
+    }
+
+    function start() {
+      stop();
+      timer = window.setInterval(draw, 50); // ~20 fps, authentic feel
+    }
+
+    function stop() {
+      if (timer) clearInterval(timer);
+    }
+
+    resize();
+    start();
+
+    let resizeTimer: number;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        resize();
+      }, 150);
+    });
+
+    document.addEventListener("visibilitychange", () =>
+      document.hidden ? stop() : start(),
+    );
+  }
+</script>

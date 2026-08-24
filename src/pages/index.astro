@@ -1,0 +1,210 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import MatrixRain from "../components/MatrixRain.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, CATEGORIES } from "../consts";
+import { withBase } from "../utils";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6);
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <section class="hero-banner">
+    <MatrixRain />
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="kicker">$ ./welcome --to kaonix<span class="caret">▊</span></p>
+      <h1>{SITE_TITLE}</h1>
+      <p class="tagline">
+        Practical IT tutorials, battle-tested best practices, and the latest
+        news in technology — follow the white rabbit.
+      </p>
+      <div class="cta">
+        <a class="btn" href={withBase("/blog/")}>Read the Blog</a>
+        <a class="link-alt" href={withBase("/categories/")}>Browse Categories →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories reveal">
+    {
+      Object.entries(CATEGORIES).map(([key, meta]) => (
+        <a class="category-card" href={withBase(`/categories/${key}/`)}>
+          <span class="icon">{meta.icon}</span>
+          <span>
+            <strong>{meta.name}</strong>
+            <p>{meta.description}</p>
+          </span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section>
+    <h2 class="section-title reveal">// latest_posts</h2>
+    <div class="grid">
+      {
+        posts.map((post, i) => (
+          <div
+            class="reveal"
+            style={`--reveal-delay:${Math.min(i * 90, 450)}ms`}
+          >
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Full-bleed banner */
+  .hero-banner {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgb(0 255 65 / 6%) 0%,
+        transparent 65%
+      ),
+      var(--bg);
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgb(0 0 0 / 18%) 4px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 4rem 1.5rem;
+    max-width: 760px;
+  }
+
+  .kicker {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: fade-in-up 0.7s ease forwards;
+  }
+
+  .caret {
+    animation: caret-blink 1s step-end infinite;
+  }
+
+  .hero-content h1 {
+    background: linear-gradient(120deg, #b4ffc6, #00ff41 55%, #0f9d31);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation:
+      fade-in-up 0.7s ease 0.15s forwards,
+      glow-pulse 4s ease-in-out 1s infinite;
+  }
+
+  .tagline {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fade-in-up 0.7s ease 0.3s forwards;
+  }
+
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    opacity: 0;
+    animation: fade-in-up 0.7s ease 0.45s forwards;
+  }
+
+  .link-alt {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+  }
+
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 3rem 0 4rem;
+  }
+
+  .category-card {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .category-card:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgb(0 255 65 / 12%);
+    transform: translateY(-3px);
+  }
+
+  .category-card strong {
+    font-size: 1.05rem;
+  }
+
+  .category-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .grid > .reveal {
+    height: 100%;
+  }
+</style>

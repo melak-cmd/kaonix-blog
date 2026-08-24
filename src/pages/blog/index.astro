@@ -1,0 +1,80 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import Timeline from "../../components/Timeline.astro";
+import { getReadingTime } from "../../utils";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const totalReadingTime = posts.reduce(
+  (sum, p) => sum + getReadingTime(p.body ?? ""),
+  0,
+);
+---
+
+<BaseLayout
+  title="Blog | Kaonix"
+  description="All articles: IT tutorials, best practices, and tech news."
+>
+  <header class="page-header">
+    <h1>// blog</h1>
+    <p class="stats">
+      {posts.length} articles · {totalReadingTime} min of reading
+    </p>
+  </header>
+
+  <div class="layout">
+    <div class="grid">
+      {
+        posts.map((post, i) => (
+          <div
+            class="reveal"
+            style={`--reveal-delay:${Math.min(i * 90, 450)}ms`}
+          >
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+    <Timeline posts={posts} />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats {
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 3rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .grid > .reveal {
+    height: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

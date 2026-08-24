@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../utils";
+---
+
+<BaseLayout title="404 — Page Not Found | Kaonix" description="The page you are looking for does not exist.">
+  <div class="notfound">
+    <p class="code">404</p>
+    <h1>Page not found</h1>
+    <p class="msg">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+    <div class="actions">
+      <a class="btn" href={withBase("/")}>Go home</a>
+      <a href={withBase("/blog/")}>Browse articles</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    text-align: center;
+    padding: 5rem 0;
+  }
+
+  .code {
+    font-family: var(--font-mono);
+    font-size: 5rem;
+    font-weight: 800;
+    background: linear-gradient(120deg, #818cf8, #38bdf8, #34d399);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+  }
+
+  h1 {
+    margin: 1rem 0 0.5rem;
+  }
+
+  .msg {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+</style>
