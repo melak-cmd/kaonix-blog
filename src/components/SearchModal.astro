@@ -168,6 +168,8 @@ import { withBase } from "../utils";
 </style>
 
 <script>
+  import { withBase } from "../utils";
+
   const overlay = document.getElementById("search-overlay")!;
   const trigger = document.getElementById("search-trigger")!;
   const input = document.getElementById("search-input") as HTMLInputElement;
@@ -187,15 +189,25 @@ import { withBase } from "../utils";
 
   async function loadIndex() {
     if (index.length) return;
-    const res = await fetch(withBase("/search-index.json"));
-    index = await res.json();
+    try {
+      const res = await fetch(withBase("/search-index.json"));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      index = await res.json();
+    } catch (err) {
+      console.error("[search] failed to load index:", err);
+      emptyMsg.textContent = "Search is unavailable right now.";
+      emptyMsg.hidden = false;
+    }
   }
 
   function open() {
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
-    loadIndex().then(() => input.focus());
     input.focus();
+    loadIndex().then(() => {
+      render(input.value);
+      input.focus();
+    });
   }
 
   function close() {
